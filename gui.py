@@ -49,7 +49,7 @@ class Grid:
         self.cubes[row][col].set_temp(val)
 
     def draw(self, win):
-        # Draw Grid Lines
+        # Create the grid lines
         gap = self.width / 9
         for i in range(self.rows+1):
             if i % 3 == 0 and i != 0:
@@ -59,7 +59,7 @@ class Grid:
             pygame.draw.line(win, (0,0,0), (0, i*gap), (self.width, i*gap), thick)
             pygame.draw.line(win, (0, 0, 0), (i * gap, 0), (i * gap, self.height), thick)
 
-        # Draw Cubes
+        # Create cubes for each individual slot
         for i in range(self.rows):
             for j in range(self.cols):
                 self.cubes[i][j].draw(win)
@@ -79,14 +79,12 @@ class Grid:
             self.cubes[row][col].set_temp(0)
 
     def click(self, pos):
-        """
-        :param: pos
-        :return: (row, col)
-        """
+
         if pos[0] < self.width and pos[1] < self.height:
             gap = self.width / 9
             x = pos[0] // gap
             y = pos[1] // gap
+            # return row and col
             return (int(y),int(x))
         else:
             return None
@@ -127,7 +125,7 @@ class Cube:
             win.blit(text, (x + (gap/2 - text.get_width()/2), y + (gap/2 - text.get_height()/2)))
 
         if self.selected:
-            pygame.draw.rect(win, (255,0,0), (x,y, gap ,gap), 3)
+            pygame.draw.rect(win, (0,0,0), (x,y, gap ,gap), 3)
 
     def set(self, val):
         self.value = val
@@ -143,7 +141,7 @@ def redraw_window(win, board, time, strikes):
     text = fnt.render("Time: " + format_time(time), 1, (0,0,0))
     win.blit(text, (540 - 160, 560))
     # Draw Strikes
-    text = fnt.render("Strikes Left: %d" % strikes, 1, (255, 0, 0))
+    text = fnt.render("Strikes Left: %d" % strikes, 1, (0, 0, 0))
     win.blit(text, (20, 560))
     # Draw grid and board
     board.draw(win)
@@ -160,9 +158,11 @@ def format_time(secs):
 
 
 def main():
-    win = pygame.display.set_mode((540,600))
+    screen = pygame.display.set_mode((540,600))
     pygame.display.set_caption("Sudoku")
     board = Grid(9, 9, 540, 540)
+    black = (0,0,0)
+    screen.fill(black)
     key = None
     run = True
     start = time.time()
@@ -220,7 +220,7 @@ def main():
         if board.selected and key != None:
             board.sketch(key)
 
-        redraw_window(win, board, play_time, strikes)
+        redraw_window(screen, board, play_time, strikes)
         pygame.display.update()
 
 
